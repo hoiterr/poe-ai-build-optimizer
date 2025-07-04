@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PoE AI Build Optimizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1 class="logo">PoE AI Optimizer</h1>
+                    <div class="version-badge">v2.1</div>
+                </div>
+                <div class="header-controls">
+                    <select class="league-selector form-control" id="leagueSelector">
+                        <option value="settlers">Settlers of Kalguur</option>
+                        <option value="standard">Standard</option>
+                        <option value="hardcore">Hardcore</option>
+                    </select>
+                    <button class="btn btn--primary" id="settingsBtn">
+                        <span class="icon">⚙️</span>
+                        Settings
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Overview -->
+            <section class="dashboard-section" id="dashboardSection">
+                <div class="dashboard-grid">
+                    <!-- Build Summary Card -->
+                    <div class="card dashboard-card build-summary">
+                        <div class="card__header">
+                            <h2>Current Build</h2>
+                            <div class="build-rating" id="buildRating">Not Analyzed</div>
+                        </div>
+                        <div class="card__body">
+                            <div class="build-preview" id="buildPreview">
+                                <div class="character-portrait">
+                                    <div class="portrait-placeholder">
+                                        <span class="character-icon">⚔️</span>
+                                    </div>
+                                </div>
+                                <div class="build-info">
+                                    <h3 id="buildName">Import a build to get started</h3>
+                                    <p id="buildClass">Select a build to analyze</p>
+                                    <div class="build-stats" id="buildStats">
+                                        <div class="stat-item">
+                                            <span class="stat-label">Life:</span>
+                                            <span class="stat-value" id="statLife">-</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">DPS:</span>
+                                            <span class="stat-value" id="statDPS">-</span>
+                                        </div>
+                                        <div class="stat-item">
+                                            <span class="stat-label">Resistances:</span>
+                                            <span class="stat-value" id="statResistances">-/-/-</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="card dashboard-card quick-actions">
+                        <div class="card__header">
+                            <h2>Quick Actions</h2>
+                        </div>
+                        <div class="card__body">
+                            <div class="action-buttons">
+                                <button class="btn btn--primary btn--lg" id="importBuildBtn">
+                                    <span class="icon">📥</span>
+                                    Import Build
+                                </button>
+                                <button class="btn btn--secondary btn--lg" id="analyzeBuildBtn" disabled>
+                                    <span class="icon">🔍</span>
+                                    Analyze Build
+                                </button>
+                                <button class="btn btn--outline btn--lg" id="exportBuildBtn" disabled>
+                                    <span class="icon">📤</span>
+                                    Export Optimized
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Market Overview -->
+                    <div class="card dashboard-card market-overview">
+                        <div class="card__header">
+                            <h2>Market Overview</h2>
+                            <div class="live-indicator">
+                                <span class="live-dot"></span>
+                                Live
+                            </div>
+                        </div>
+                        <div class="card__body">
+                            <div class="market-items" id="marketItems">
+                                <div class="market-item">
+                                    <span class="item-name">Divine Orb</span>
+                                    <span class="item-price">165c</span>
+                                    <span class="price-change positive">+2%</span>
+                                </div>
+                                <div class="market-item">
+                                    <span class="item-name">Mageblood</span>
+                                    <span class="item-price">450div</span>
+                                    <span class="price-change negative">-3%</span>
+                                </div>
+                                <div class="market-item">
+                                    <span class="item-name">Headhunter</span>
+                                    <span class="item-price">89div</span>
+                                    <span class="price-change positive">+8%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI Insights -->
+                    <div class="card dashboard-card ai-insights">
+                        <div class="card__header">
+                            <h2>AI Insights</h2>
+                            <div class="ai-indicator">
+                                <span class="ai-dot"></span>
+                                AI
+                            </div>
+                        </div>
+                        <div class="card__body">
+                            <div class="insights-list" id="insightsList">
+                                <div class="insight-item">
+                                    <span class="insight-icon">💡</span>
+                                    <p>Import a build to receive AI-powered insights and recommendations</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Build Import Section -->
+            <section class="import-section hidden" id="importSection">
+                <div class="container">
+                    <div class="card import-card">
+                        <div class="card__header">
+                            <h2>Import Path of Building</h2>
+                            <p>Paste your PoB pastebin URL or build code</p>
+                        </div>
+                        <div class="card__body">
+                            <div class="import-form">
+                                <div class="form-group">
+                                    <label class="form-label" for="buildInput">Build Code / Pastebin URL</label>
+                                    <textarea class="form-control" id="buildInput" rows="6" placeholder="Paste your Path of Building code here..."></textarea>
+                                </div>
+                                <div class="import-actions">
+                                    <button class="btn btn--primary btn--lg" id="importSubmitBtn">
+                                        <span class="icon">📥</span>
+                                        Import & Analyze
+                                    </button>
+                                    <button class="btn btn--secondary" id="sampleBuildBtn">
+                                        <span class="icon">🎯</span>
+                                        Load Sample Build
+                                    </button>
+                                </div>
+                                <div class="import-status" id="importStatus"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Builds -->
+                    <div class="card recent-builds">
+                        <div class="card__header">
+                            <h3>Recent Builds</h3>
+                        </div>
+                        <div class="card__body">
+                            <div class="builds-grid" id="recentBuilds">
+                                <div class="build-thumbnail">
+                                    <div class="build-preview-mini">
+                                        <span class="build-class">Champion</span>
+                                        <span class="build-name">Lightning Strike</span>
+                                        <span class="build-rating rating-b">B+</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Analysis Section -->
+            <section class="analysis-section hidden" id="analysisSection">
+                <div class="container">
+                    <!-- Analysis Navigation -->
+                    <div class="analysis-nav">
+                        <button class="nav-btn active" data-tab="overview">Overall Assessment</button>
+                        <button class="nav-btn" data-tab="defense">Defense Analysis</button>
+                        <button class="nav-btn" data-tab="offense">Offense Analysis</button>
+                        <button class="nav-btn" data-tab="gear">Gear & Upgrades</button>
+                        <button class="nav-btn" data-tab="economy">Cost Analysis</button>
+                    </div>
+
+                    <!-- Analysis Content -->
+                    <div class="analysis-content">
+                        <!-- Overview Tab -->
+                        <div class="analysis-tab active" id="overviewTab">
+                            <div class="analysis-grid">
+                                <div class="card analysis-card">
+                                    <div class="card__header">
+                                        <h3>Build Rating</h3>
+                                    </div>
+                                    <div class="card__body">
+                                        <div class="rating-display">
+                                            <div class="rating-letter" id="overallRating">B+</div>
+                                            <div class="rating-breakdown" id="ratingBreakdown">
+                                                <div class="rating-item">
+                                                    <span class="rating-label">Offense</span>
+                                                    <div class="rating-bar">
+                                                        <div class="rating-fill" style="width: 92%"></div>
+                                                    </div>
+                                                    <span class="rating-score">92</span>
+                                                </div>
+                                                <div class="rating-item">
+                                                    <span class="rating-label">Defense</span>
+                                                    <div class="rating-bar">
+                                                        <div class="rating-fill defense" style="width: 73%"></div>
+                                                    </div>
+                                                    <span class="rating-score">73</span>
+                                                </div>
+                                                <div class="rating-item">
+                                                    <span class="rating-label">Efficiency</span>
+                                                    <div class="rating-bar">
+                                                        <div class="rating-fill efficiency" style="width: 87%"></div>
+                                                    </div>
+                                                    <span class="rating-score">87</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card analysis-card">
+                                    <div class="card__header">
+                                        <h3>Critical Issues</h3>
+                                    </div>
+                                    <div class="card__body">
+                                        <div class="issues-list" id="issuesList">
+                                            <div class="issue-item high">
+                                                <div class="issue-severity">High</div>
+                                                <div class="issue-content">
+                                                    <h4>Low Chaos Resistance</h4>
+                                                    <p>Chaos resistance at -12% makes you vulnerable to chaos damage</p>
+                                                </div>
+                                            </div>
+                                            <div class="issue-item medium">
+                                                <div class="issue-severity">Medium</div>
+                                                <div class="issue-content">
+                                                    <h4>Weapon Upgrade Available</h4>
+                                                    <p>Current weapon can be upgraded for 15% more DPS</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card analysis-card">
+                                    <div class="card__header">
+                                        <h3>Quick Wins</h3>
+                                    </div>
+                                    <div class="card__body">
+                                        <div class="recommendations-list" id="quickWins">
+                                            <div class="recommendation-item">
+                                                <div class="rec-priority high">High Priority</div>
+                                                <div class="rec-content">
+                                                    <h4>Improve Chaos Resistance</h4>
+                                                    <p>Cost: 35 chaos • Improvement: +12% Survivability</p>
+                                                </div>
+                                            </div>
+                                            <div class="recommendation-item">
+                                                <div class="rec-priority medium">Medium Priority</div>
+                                                <div class="rec-content">
+                                                    <h4>Upgrade Main Hand Weapon</h4>
+                                                    <p>Cost: 180 chaos • Improvement: +15.2% DPS</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Defense Tab -->
+                        <div class="analysis-tab" id="defenseTab">
+                            <div class="analysis-grid">
+                                <div class="card analysis-card">
+                                    <div class="card__header">
+                                        <h3>Effective Health Pool</h3>
+                                    </div>
+                                    <div class="card__body">
+                                        <div class="ehp-display">
+                                            <div class="ehp-total">6,240 EHP</div>
+                                            <div class="ehp-breakdown">
+                                                <div class="ehp-item">
+                                                    <span class="ehp-label">Life</span>
+                                                    <span class="ehp-value">6,240</span>
+                                                </div>
+                                                <div class="ehp-item">
+                                                    <span class="ehp-label">Energy Shield</span>
+                                                    <span class="ehp-value">0</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card analysis-card">
+                                    <div class="card__header">
+                                        <h3>Resistances</h3>
+                                    </div>
+                                    <div class="card__body">
+                                        <div class="resistance-grid">
+                                            <div class="resistance-item fire">
+                                                <span class="res-label">Fire</span>
+                                                <span class="res-value">75%</span>
+                                                <div class="res-bar">
+                                                    <div class="res-fill" style="width: 75%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="resistance-item cold">
+                                                <span class="res-label">Cold</span>
+                                                <span class="res-value">75%</span>
+                                                <div class="res-bar">
+                                                    <div class="res-fill" style="width: 75%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="resistance-item lightning">
+                                                <span class="res-label">Lightning</span>
+                                                <span class="res-value">75%</span>
+                                                <div class="res-bar">
+                                                    <div class="res-fill" style="width: 75%"></div>
+                                                </div>
+                                            </div>
+                                            <div class="resistance-item chaos critical">
+                                                <span class="res-label">Chaos</span>
+                                                <span class="res-value">-12%</span>
+                                                <div class="res-bar">
+                                                    <div class="res-fill negative" style="width: 12%"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Offense Tab -->
+                        <div class="analysis-tab" id="offenseTab">
+                            <div class="analysis-grid">
+                                <div class="card analysis-card">
+                                    <div class="card__header">
+                                        <h3>DPS Breakdown</h3>
+                                    </div>
+                                    <div class="card__body">
+                                        <div class="dps-display">
+                                            <div class="dps-total">2,850,000 DPS</div>
+                                            <div class="dps-breakdown">
+                                                <div class="dps-item">
+                                                    <span class="dps-label">Lightning Strike</span>
+                                                    <span class="dps-value">2,850,000</span>
+                                                    <div class="dps-bar">
+                                                        <div class="dps-fill" style="width: 100%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card analysis-card">
+                                    <div class="card__header">
+                                        <h3>Scaling Opportunities</h3>
+                                    </div>
+                                    <div class="card__body">
+                                        <div class="scaling-list">
+                                            <div class="scaling-item">
+                                                <span class="scaling-stat">Weapon Physical DPS</span>
+                                                <span class="scaling-impact">+1.2% per point</span>
+                                            </div>
+                                            <div class="scaling-item">
+                                                <span class="scaling-stat">Attack Speed</span>
+                                                <span class="scaling-impact">+0.8% per point</span>
+                                            </div>
+                                            <div class="scaling-item">
+                                                <span class="scaling-stat">Critical Strike</span>
+                                                <span class="scaling-impact">+0.6% per point</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gear Tab -->
+                        <div class="analysis-tab" id="gearTab">
+                            <div class="gear-layout">
+                                <div class="gear-slots">
+                                    <div class="gear-slot helmet" data-slot="helmet">
+                                        <div class="gear-item">
+                                            <div class="item-icon">🪖</div>
+                                            <div class="item-info">
+                                                <div class="item-name">Rare Helmet</div>
+                                                <div class="item-value">25c</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="gear-slot weapon" data-slot="mainHand">
+                                        <div class="gear-item">
+                                            <div class="item-icon">🗡️</div>
+                                            <div class="item-info">
+                                                <div class="item-name">Rare Claw</div>
+                                                <div class="item-value">45c</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="gear-slot chest" data-slot="chest">
+                                        <div class="gear-item">
+                                            <div class="item-icon">🛡️</div>
+                                            <div class="item-info">
+                                                <div class="item-name">Rare Chest</div>
+                                                <div class="item-value">120c</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="upgrade-panel" id="upgradePanel">
+                                    <div class="card">
+                                        <div class="card__header">
+                                            <h3>Upgrade Options</h3>
+                                            <div class="slot-indicator" id="selectedSlot">Select a gear slot</div>
+                                        </div>
+                                        <div class="card__body">
+                                            <div class="upgrade-list" id="upgradeList">
+                                                <div class="upgrade-placeholder">
+                                                    <span class="icon">👈</span>
+                                                    <p>Click on a gear slot to see upgrade options</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Economy Tab -->
+                        <div class="analysis-tab" id="economyTab">
+                            <div class="analysis-grid">
+                                <div class="card analysis-card">
+                                    <div class="card__header">
+                                        <h3>Total Upgrade Cost</h3>
+                                    </div>
+                                    <div class="card__body">
+                                        <div class="cost-summary">
+                                            <div class="cost-total">765 Chaos Orbs</div>
+                                            <div class="cost-breakdown">
+                                                <div class="cost-item">
+                                                    <span class="cost-label">High Priority</span>
+                                                    <span class="cost-value">215c</span>
+                                                </div>
+                                                <div class="cost-item">
+                                                    <span class="cost-label">Medium Priority</span>
+                                                    <span class="cost-value">350c</span>
+                                                </div>
+                                                <div class="cost-item">
+                                                    <span class="cost-label">Low Priority</span>
+                                                    <span class="cost-value">200c</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card analysis-card">
+                                    <div class="card__header">
+                                        <h3>ROI Analysis</h3>
+                                    </div>
+                                    <div class="card__body">
+                                        <div class="roi-chart">
+                                            <div class="roi-item">
+                                                <div class="roi-upgrade">Chaos Resistance Ring</div>
+                                                <div class="roi-bar">
+                                                    <div class="roi-fill" style="width: 95%"></div>
+                                                </div>
+                                                <div class="roi-value">95% ROI</div>
+                                            </div>
+                                            <div class="roi-item">
+                                                <div class="roi-upgrade">Weapon Upgrade</div>
+                                                <div class="roi-bar">
+                                                    <div class="roi-fill" style="width: 78%"></div>
+                                                </div>
+                                                <div class="roi-value">78% ROI</div>
+                                            </div>
+                                            <div class="roi-item">
+                                                <div class="roi-upgrade">Helmet Upgrade</div>
+                                                <div class="roi-bar">
+                                                    <div class="roi-fill" style="width: 62%"></div>
+                                                </div>
+                                                <div class="roi-value">62% ROI</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Loading Overlay -->
+        <div class="loading-overlay hidden" id="loadingOverlay">
+            <div class="loading-content">
+                <div class="loading-spinner"></div>
+                <div class="loading-text">Analyzing build...</div>
+                <div class="loading-progress">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Parsing build data...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
